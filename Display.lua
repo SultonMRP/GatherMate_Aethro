@@ -606,6 +606,11 @@ function Display:ChangedVars(event,cvar,value)
 end
 
 function Display:UpdateMaps()
+	-- Set the map before crater checks. .v back leaves continent -1 / crater
+	-- map file stale until SetMapToCurrentZone().
+	if not WorldMapFrame:IsShown() then
+		SetMapToCurrentZone()
+	end
 	inInstance = IsInInstance()
 	if GatherMate.CustomZones and GatherMate.CustomZones.ShouldTreatAsOutdoor() then
 		inInstance = false
@@ -616,10 +621,8 @@ function Display:UpdateMaps()
 	elseif not inInstance and not listening then
 		self:RegisterMapEvents()
 	end
+	lastX, lastY, lastXY, lastYY = 0, 0, 0, 0
 	clearpins(minimapPins)
-	if not WorldMapFrame:IsShown() then
-		SetMapToCurrentZone()
-	end
 	self:UpdateMiniMap(true)
 	self:UpdateWorldMap(true)
 end

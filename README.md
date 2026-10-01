@@ -20,6 +20,14 @@ Then `/reload` in-game.
 
 Gather as normal. Nodes in Azshara Crater are stored under that zone name and stay after logout and `/reload`.
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) and [Releases](https://github.com/SultonMRP/GatherMate_Aethro/releases).
+
+### v1.25-aethro.2
+
+Fixed leftover Azshara Crater pins after `.v back` (Guild Village) to a city. Orgrimmar minimap and world map no longer show the crater node set.
+
 ## Notes
 
 - Based on GatherMate v.1.25 (`## Interface: 30300`)

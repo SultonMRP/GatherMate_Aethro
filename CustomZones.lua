@@ -95,55 +95,18 @@ local function FindDefinition(zoneName, mapFile, mapId)
 	end
 end
 
-local function LearnFromCurrentMap(def)
-	if not def then
-		return
-	end
-	-- Only learn map file / area id while the client is actually on the
-	-- crater (continent -1). An open world map of Elwynn must not be
-	-- recorded as AzsharaCrater.
-	local C = GetCurrentMapContinent()
-	if not C or C <= 0 then
-		local mapFile = GetMapInfo()
-		if mapFile and mapFile ~= "" and not def.mapFiles[mapFile] then
-			def.mapFiles[mapFile] = true
-			def.canonicalFile = mapFile
-			mapFilesToDef[mapFile] = def
-		end
-		local mapId = GetServerMapId()
-		if mapId and not mapIdsToDef[mapId] then
-			mapIdsToDef[mapId] = def
-		end
-	end
+function CustomZones.GetDefinitionForPlayer()
+	-- GetRealZoneText() is the truth. After .v back (GuildVillageHelper)
+	-- the client is in Orgrimmar, but continent / GetMapInfo() can still
+	-- be the crater for a while. A named non-crater zone is never the crater.
+	-- Never learn new zone names (that used to turn Orgrimmar into a crater alias).
 	local zoneName = GetPlayerZoneName()
 	if zoneName and zoneName ~= "" then
-		local key = strlower(zoneName)
-		if not namesToDef[key] then
-			def.names[key] = true
-			namesToDef[key] = def
-			if GatherMate.zoneData then
-				GatherMate.zoneData[zoneName] = { def.width, def.height, def.zoneID }
-			end
-		end
-	end
-end
-
-function CustomZones.GetDefinitionForPlayer()
-	-- Prefer the player's zone name so an open world map of another zone
-	-- cannot impersonate the crater, and the crater still matches when
-	-- the world map is pointed elsewhere.
-	local def = FindDefinition(GetPlayerZoneName(), nil, nil)
-	if def then
-		LearnFromCurrentMap(def)
-		return def
+		return FindDefinition(zoneName, nil, nil)
 	end
 	local C = GetCurrentMapContinent()
 	if not C or C <= 0 then
-		def = FindDefinition(nil, GetMapInfo(), GetServerMapId())
-		if def then
-			LearnFromCurrentMap(def)
-			return def
-		end
+		return FindDefinition(nil, GetMapInfo(), GetServerMapId())
 	end
 end
 
@@ -171,14 +134,20 @@ function CustomZones.GetPlayerZoneName()
 end
 
 function CustomZones.ResolveViewedZone()
-	local mapFile = GetMapInfo()
-	local def = FindDefinition(nil, mapFile, nil)
+	-- Only when the world map itself is on the crater. After .v back the
+	-- Orgrimmar city map can still have a leftover crater map file / area
+	-- id if we trust those on a stock continent.
+	local C = GetCurrentMapContinent()
+	if C and C > 0 then
+		return
+	end
+	local def = FindDefinition(nil, GetMapInfo(), nil)
 	if def then
 		return def.name
 	end
-	local C = GetCurrentMapContinent()
-	if not C or C <= 0 then
-		def = FindDefinition(nil, nil, GetServerMapId())
+	local mapId = GetServerMapId()
+	if mapId == 1005 then
+		def = FindDefinition(nil, nil, mapId)
 		if def then
 			return def.name
 		end
