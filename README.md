@@ -24,6 +24,10 @@ Gather as normal. Nodes in Azshara Crater are stored under that zone name and st
 
 See [CHANGELOG.md](CHANGELOG.md) and [Releases](https://github.com/SultonMRP/GatherMate_Aethro/releases).
 
+### v1.25-aethro.3
+
+Ignore **GM Island** by zone name. No client map and no gather nodes, so collect and pins are skipped. Not treated as Azshara Crater.
+
 ### v1.25-aethro.2
 
 Fixed leftover Azshara Crater pins after `.v back` (Guild Village) to a city. Orgrimmar minimap and world map no longer show the crater node set.
@@ -33,3 +37,4 @@ Fixed leftover Azshara Crater pins after `.v back` (Guild Village) to a city. Or
 - Based on GatherMate v.1.25 (`## Interface: 30300`)
 - Azshara Crater is a private-server map, not a stock Blizzard zone
 - Zone name is **Azshara Crater**. Map ID is **1005**.
+- **GM Island** is ignored by name (`CustomZones.lua`). See `AGENTS.md` and `..\agent-global.md`.

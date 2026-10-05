@@ -1,5 +1,14 @@
 # GatherMate Aethro changelog
 
+## v1.25-aethro.3
+
+Ignore **GM Island** by zone name (`GetRealZoneText()`). It has no client map and no gather nodes.
+
+- `CustomZones.lua` — `ShouldIgnoreZone` / `ShouldIgnorePlayer`
+- `Display.lua` — no minimap or world-map pins
+- `Collector.lua` — no node recording
+- Not an Azshara Crater alias (crater stays map ID **1005**)
+
 ## v1.25-aethro.2
 
 Fixed leftover Azshara Crater pins after leaving via Guild Village (`.v back`).

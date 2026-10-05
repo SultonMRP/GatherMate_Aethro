@@ -114,6 +114,12 @@ function Collector:ZoneChange()
 	if GatherMate.CustomZones and GatherMate.CustomZones.ShouldTreatAsOutdoor() then
 		inInstance = false
 	end
+	if GatherMate.CustomZones and GatherMate.CustomZones.ShouldIgnorePlayer() then
+		if gatherEvents then
+			self:UnregisterGatherEvents()
+		end
+		return
+	end
 	if inInstance and gatherEvents then
 		self:UnregisterGatherEvents()
 	elseif not gatherEvents then
@@ -264,6 +270,9 @@ function Collector:addItem(skill,what)
 	if GetMapInfo() == "ScarletEnclave" then return end
 	--self:GatherCompleted()
 	local zone = GetRealZoneText()
+	if GatherMate.CustomZones and GatherMate.CustomZones.ShouldIgnoreZone(zone) then
+		return
+	end
 	if GatherMate.CustomZones then
 		local customName = GatherMate.CustomZones.GetPlayerZoneName()
 		if customName and GatherMate.CustomZones.IsCustomOutdoorZone(customName) then

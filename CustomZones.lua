@@ -33,6 +33,11 @@ local CustomZoneList = {
 	},
 }
 
+-- Named zones with no client map / no gather nodes. Skip collect + pins.
+local ignoredNames = {
+	["gm island"] = true,
+}
+
 local CustomZones = {}
 GatherMate.CustomZones = CustomZones
 
@@ -40,6 +45,22 @@ local registered = {}
 local namesToDef = {}
 local mapFilesToDef = {}
 local mapIdsToDef = {}
+
+function CustomZones.ShouldIgnoreZone(name)
+	if not name or name == "" then
+		return false
+	end
+	name = strlower(name)
+	if ignoredNames[name] then
+		return true
+	end
+	local base = name:match("^(.*[^%d])%d+$")
+	return base and ignoredNames[base] or false
+end
+
+function CustomZones.ShouldIgnorePlayer()
+	return CustomZones.ShouldIgnoreZone(GetRealZoneText())
+end
 
 local function GetServerMapId()
 	-- Confirmed on Aethro: GetCurrentMapAreaID() == 1005 for Azshara Crater.

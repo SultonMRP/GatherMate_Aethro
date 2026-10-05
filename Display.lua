@@ -615,6 +615,14 @@ function Display:UpdateMaps()
 	if GatherMate.CustomZones and GatherMate.CustomZones.ShouldTreatAsOutdoor() then
 		inInstance = false
 	end
+	if GatherMate.CustomZones and GatherMate.CustomZones.ShouldIgnorePlayer() then
+		if listening then
+			self:UnregisterMapEvents()
+		end
+		lastX, lastY, lastXY, lastYY = 0, 0, 0, 0
+		clearpins(minimapPins)
+		return
+	end
 	if inInstance and listening then
 		self:UnregisterMapEvents()
 		return
@@ -707,6 +715,10 @@ function Display:UpdateMiniMap(force)
 	
 	-- update our zone info
 	zone = GetRealZoneText()
+	if GatherMate.CustomZones and GatherMate.CustomZones.ShouldIgnoreZone(zone) then
+		zone = nil
+		return
+	end
 	if GatherMate.CustomZones then
 		local customName = GatherMate.CustomZones.GetPlayerZoneName()
 		if customName and GatherMate.CustomZones.IsCustomOutdoorZone(customName) then
